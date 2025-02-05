@@ -23,14 +23,24 @@ module Snake
       
       @background = Gosu::Image.new(BKGIMG, tileable: true)
 
+      #Food pellets
+      @pellets = []
+      @animation = Animation.new()
+
     end
 
     def update()
+      if rand(100) < 4 and @pellets.length < 25
+        @pellets.push(Food.new(@animation))
+      end
 
     end
 
     def draw()
       @background.draw(0,0,ZBKG, 2.5, 2.5)
+      @pellets.each do |pellet|
+        pellet.draw()
+      end
 
     end
 
@@ -44,13 +54,36 @@ module Snake
 
   end
 
+  class Food
+    def initialize(a)
+      @animation = a
+
+      # Top left 50x50 reserved for scorecard
+      @x = rand(50..WINX)
+      @y = rand(50..WINY)
+      @z = ZFOOD
+    end
+
+    def draw()
+      img = @animation.frame()
+      img.draw(@x, @y, @z)
+    end
+
+  end
+
   class Sprite
 
   end
 
-  class Food
+  class Animation
+    def initialize
+      @frames = Gosu::Image.load_tiles(FOODIMG, 25, 25)
+    end
+  
+    def frame()
+      frame = @frames[(Gosu::milliseconds / 100) % @frames.length]
+      return frame
+    end
 
   end
-
-
 end
