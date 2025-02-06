@@ -14,6 +14,13 @@ ZFOOD, ZSPRITE = 1
 FOODIMG = "media/star.png"
 BKGIMG = "media/grass_background.png"
 
+# Font sizes for sprites and text
+SPRITESIZE = 12
+FONTSIZE = 24
+
+# Velocities for sprite
+VELX = 10
+VELY = 10
 
 module Snake
   class Window < Gosu::Window
@@ -21,7 +28,7 @@ module Snake
       super(WINX, WINY, fullscreen: false)
       self.caption = "Snake Game"
       
-      @background = Gosu::Image.new(BKGIMG, tileable: true)
+      @sprite = Snake.new()
 
       #Food pellets
       @pellets = []
@@ -34,13 +41,26 @@ module Snake
         @pellets.push(Food.new(@animation))
       end
 
+      if Gosu::button_down?(Gosu::KB_UP)
+        @sprite.turn(90)
+      elsif Gosu::button_down?(Gosu::KB_DOWN)
+        @sprite.turn(270)
+      elsif Gosu::button_down?(Gosu::KB_LEFT)
+        @sprite.turn(180)
+      elsif Gosu::button_down?(Gosu::KB_RIGHT)
+        @sprite.turn(0)
+      end
+
+      @sprite.move()
+
     end
 
     def draw()
-      @background.draw(0,0,ZBKG, 2.5, 2.5)
       @pellets.each do |pellet|
         pellet.draw()
       end
+
+      @sprite.draw()
 
     end
 
@@ -66,15 +86,45 @@ module Snake
 
     def draw()
       img = @animation.frame()
-      img.draw(@x, @y, @z)
+      img.draw(@x, @y, @z, 1, 1, Gosu::Color::YELLOW.dup, :additive)
     end
 
   end
 
-  class Sprite
+  class Snake
+    def initialize()
+      @x = @y = @angle = @length = 0.0
+      @z = ZSPRITE
 
+      char = "\u26AA".encode('utf-8')
+
+      @head = Gosu::Image.from_text(char,SPRITESIZE)
+      @body = Snake_body.new()
+    end
+
+    def place(x,y)
+      @x = x
+      @y = y
+    end
+
+    def turn(angle)
+      @angle = angle
+    end
+
+    def move()
+      @x += Gosu::offset_x(@angle, VELX)
+      @y += Gosu::offset_y(@angle, VELY)
+    end
+
+    def draw()
+      @head.draw(@x, @y, 1) 
+
+    end
   end
 
+  class Snake_body
+
+  end
   class Animation
     def initialize
       @frames = Gosu::Image.load_tiles(FOODIMG, 25, 25)
