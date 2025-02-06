@@ -8,7 +8,7 @@ WINY = 750
 
 # Z orderings
 ZBKG = 0
-ZFOOD, ZSPRITE = 1
+ZFOOD = ZSPRITE = 1
 
 # Image locations
 FOODIMG = "media/star.png"
@@ -19,8 +19,8 @@ SPRITESIZE = 12
 FONTSIZE = 24
 
 # Velocities for sprite
-VELX = 10
-VELY = 10
+VELX = 1
+VELY = 1
 
 module Snake
   class Window < Gosu::Window
@@ -28,7 +28,11 @@ module Snake
       super(WINX, WINY, fullscreen: false)
       self.caption = "Snake Game"
       
-      @sprite = Snake.new()
+      #Snake sprite
+      
+      @icon = Gosu::Image.from_blob(25, 25, "\255\255\255\255" * (25 *25))
+      @sprite = Snake.new(@icon)
+      @sprite.place(WINX/2, WINY/2)
 
       #Food pellets
       @pellets = []
@@ -92,14 +96,13 @@ module Snake
   end
 
   class Snake
-    def initialize()
+    def initialize(icon)
       @x = @y = @angle = @length = 0.0
       @z = ZSPRITE
+      
 
-      char = "\u26AA".encode('utf-8')
-
-      @head = Gosu::Image.from_text(char,SPRITESIZE)
-      @body = Snake_body.new()
+      @head = icon
+      @body = Snake_body.new(icon)
     end
 
     def place(x,y)
@@ -117,12 +120,15 @@ module Snake
     end
 
     def draw()
-      @head.draw(@x, @y, 1) 
+      @head.draw(@x, @y, ZSPRITE, 1, 1) 
 
     end
   end
 
   class Snake_body
+    def initialize(icon)
+
+    end
 
   end
   class Animation
