@@ -8,7 +8,7 @@ WINY = 750
 
 # Z orderings
 ZBKG = 0
-ZFOOD = ZSPRITE = 1
+ZFOOD = ZSPRITE = ZTEXT = 1
 
 # Image locations
 FOODIMG = "media/star.png"
@@ -19,7 +19,8 @@ SPRITESIZE = 12
 FONTSIZE = 24
 
 # Velocity for sprite
-VEL = 1
+VEL = 2
+
 
 module Snake
   class Window < Gosu::Window
@@ -27,8 +28,10 @@ module Snake
       super(WINX, WINY, fullscreen: false)
       self.caption = "Snake Game"
       
+      # Score caption
+      @score = Gosu::Font.new(50)
+
       #Snake sprite
-      
       @icon = Gosu::Image.from_blob(25, 25, "\0\xFF\0\xFF" * (25 * 25))
       @sprite = Snake.new(@icon)
       @sprite.place(WINX/2, WINY/2)
@@ -55,6 +58,9 @@ module Snake
       end
 
       @sprite.draw()
+      @sprite.eat_food(@pellets)
+
+      @score.draw_text("Current Score: #{@sprite.get_length} ", 0, 0, ZTEXT)
 
     end
 
@@ -78,6 +84,8 @@ module Snake
   end
 
   class Food
+    attr_reader :x, :y
+
     def initialize(a)
       @animation = a
 
@@ -127,6 +135,22 @@ module Snake
       end
     end
 
+    def eat_food(pellets)
+      pellets.reject! do |p|
+        if  Gosu::distance(@x, @y, p.x, p.y) < 35
+          #Modify body
+          @body.grow()
+          true
+        else
+          false
+        end
+      end
+    end
+
+    def get_length()
+      return @body.length
+    end
+
     def draw()
       @head.draw(@x, @y, ZSPRITE, 1, 1) 
 
@@ -134,9 +158,17 @@ module Snake
   end
 
   class Snake_body
-    def initialize(icon)
+    attr_reader :length
 
+    def initialize(icon)
+      @length = 0
+      
     end
+
+    def grow()
+      @length += 1
+    end
+
 
   end
   class Animation
