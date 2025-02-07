@@ -18,9 +18,8 @@ BKGIMG = "media/grass_background.png"
 SPRITESIZE = 12
 FONTSIZE = 24
 
-# Velocities for sprite
-VELX = 1
-VELY = 1
+# Velocity for sprite
+VEL = 1
 
 module Snake
   class Window < Gosu::Window
@@ -30,7 +29,7 @@ module Snake
       
       #Snake sprite
       
-      @icon = Gosu::Image.from_blob(25, 25, "\255\255\255\255" * (25 *25))
+      @icon = Gosu::Image.from_blob(25, 25, "\0\xFF\0\xFF" * (25 * 25))
       @sprite = Snake.new(@icon)
       @sprite.place(WINX/2, WINY/2)
 
@@ -45,15 +44,6 @@ module Snake
         @pellets.push(Food.new(@animation))
       end
 
-      if Gosu::button_down?(Gosu::KB_UP)
-        @sprite.turn(90)
-      elsif Gosu::button_down?(Gosu::KB_DOWN)
-        @sprite.turn(270)
-      elsif Gosu::button_down?(Gosu::KB_LEFT)
-        @sprite.turn(180)
-      elsif Gosu::button_down?(Gosu::KB_RIGHT)
-        @sprite.turn(0)
-      end
 
       @sprite.move()
 
@@ -69,10 +59,19 @@ module Snake
     end
 
     def button_down(id)
-      if id == Gosu::KB_ESCAPE
-        close
+      case id
+      when Gosu::KB_UP
+        @sprite.turn('u')
+      when Gosu::KB_DOWN
+        @sprite.turn('d')
+      when Gosu::KB_RIGHT
+        @sprite.turn('r')
+      when Gosu::KB_LEFT
+        @sprite.turn('l')
+      when Gosu::KB_ESCAPE
+        close()
       else
-        super()
+       super()
       end
     end
 
@@ -99,6 +98,7 @@ module Snake
     def initialize(icon)
       @x = @y = @angle = @length = 0.0
       @z = ZSPRITE
+      @dir = 'u'
       
 
       @head = icon
@@ -110,13 +110,21 @@ module Snake
       @y = y
     end
 
-    def turn(angle)
-      @angle = angle
+    def turn(d)
+      @dir = d
     end
 
     def move()
-      @x += Gosu::offset_x(@angle, VELX)
-      @y += Gosu::offset_y(@angle, VELY)
+      case @dir
+      when 'u'
+        @y -= VEL
+      when 'd'
+        @y += VEL
+      when 'r'
+        @x += VEL
+      when 'l'
+        @x -= VEL
+      end
     end
 
     def draw()
