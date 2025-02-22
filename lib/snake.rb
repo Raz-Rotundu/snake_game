@@ -103,6 +103,7 @@ module Snake
   end
 
   class Snake
+    attr_reader :x, :y
     def initialize(icon)
       @x = @y = @angle = @length = 0.0
       @z = ZSPRITE
@@ -110,7 +111,6 @@ module Snake
       
 
       @head = icon
-      @body = Snake_body.new(icon)
     end
 
     def place(x,y)
@@ -147,30 +147,12 @@ module Snake
       end
     end
 
-    def get_length()
-      return @body.length
-    end
-
     def draw()
       @head.draw(@x, @y, ZSPRITE, 1, 1) 
 
     end
   end
 
-  class Snake_body
-    attr_reader :length
-
-    def initialize(icon)
-      @length = 0
-      
-    end
-
-    def grow()
-      @length += 1
-    end
-
-
-  end
   class Animation
     def initialize
       @frames = Gosu::Image.load_tiles(FOODIMG, 25, 25)
