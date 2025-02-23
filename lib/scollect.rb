@@ -6,8 +6,8 @@ module Scollect
 
   # Collection of animation frames + api
   class Animation
-    def init
-      @frames = Gosu::Image.load_tiles(Sconst::FOODIMG, Sconst::FOODX, Sconst::FOODY)
+    def initialize(addr, tile_width. wile_height)
+      @frames = Gosu::Image.load_tiles(addr, tile_width, tile_height)
     end
 
     def next()
@@ -17,11 +17,12 @@ module Scollect
 
   # A collection of snake body segments + api
   class Snake_Body
-    def init()
+    def initialize()
       @segments = []
       @first = @last = nil
     end
 
+    # TODO add object behaviour
     def add(o)
     end
 

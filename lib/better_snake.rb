@@ -8,9 +8,13 @@ module Snake
 
   # A static image with a position
   class Sprite
-    def init(image)
+    attr_reader :x, :y
+
+    # Gosu::Image
+    def initialize(image, x = 0, y = 0)
       @icon = image
-      @x = @y = 0
+      @x = x
+      @y = y
       @z = Sconst::SPRITEZ
     end
 
@@ -19,30 +23,30 @@ module Snake
       @y = y
     end
 
-    def draw()
-      @icon.draw(@x, @y, @z)
+    def draw(color)
+      color == nil ? @icon.draw(@x, @y, @z, 1, 1) : @icon.draw(@x, @y, @z, 1, 1,color, :additive)
     end
 
 
     # A sprite using an animation
     class Star < Sprite
-      # some sort of include statement?
-
-      def init(anim)
+      # Scollect::Animation
+      def initialize(anim)
         @animation = anim
-        super(@animation.next())
+        super(@animation.next(), rand(50..Sconst::WINX), rand(50..Sconst::WINY))
       end
 
       def draw()
-        @icon = @animation.next()
-        super()
+        self.icon = @animation.next()
+        super(Gosu::Color::YELLOW.dup)
       end
     end
 
     # A sprite with position and direction
     class Snake_head < Sprite
-      def init(icon)
-        @direction = 'U'
+
+      def initialize(icon)
+        @direction = 'u'
         super(icon)
       end
 
