@@ -15,7 +15,7 @@ module Snake
       @icon = image
       @x = x
       @y = y
-      @z = Sconst::SPRITEZ
+      @z = Sconst::ZSPRITE
     end
 
     def place(x, y)
@@ -23,9 +23,10 @@ module Snake
       @y = y
     end
 
-    def draw(color)
-      color == nil ? @icon.draw(@x, @y, @z, 1, 1) : @icon.draw(@x, @y, @z, 1, 1,color, :additive)
+    def draw(color = nil)
+      color == nil ? @icon.draw_rot(@x, @y, @z, 1, 1) : @icon.draw(@x, @y, @z, 1, 1,color, :additive)
     end
+  end
 
 
     # A sprite using an animation
@@ -33,25 +34,51 @@ module Snake
       # Scollect::Animation
       def initialize(anim)
         @animation = anim
-        super(@animation.next(), rand(50..Sconst::WINX), rand(50..Sconst::WINY))
+        super(@animation.next(), rand(Sconst::SCORE_SIZE..Sconst::WINX), rand(Sconst::SCORE_SIZE..Sconst::WINY))
       end
 
       def draw()
-        self.icon = @animation.next()
+        @icon = @animation.next()
         super(Gosu::Color::YELLOW.dup)
       end
     end
 
     # A sprite with position and direction
     class Snake_head < Sprite
+      attr_accessor :direction
 
       def initialize(icon)
         @direction = 'u'
         super(icon)
       end
 
+      def move()
+        case @direction
+        when 'u'
+          @y += Sconst::VEL
+
+        when 'd'
+          @y += Sconst::VEL
+
+        when 'l'
+          @x -= Sconst::VEL
+
+        when 'r'
+          @x += Sconst::VEL
+
+        end
+        @x %= Sconst::WINX
+        @y %= Sconst::WINY
+      end
+
       def is_touching?(obj)
         return Gosu::distance(self.x, self.y, obj.x, obj.y) < 35
       end
     end
+
+    class Snake_sprite
+
+      def initialize(icon)
+        @head = Snake_head.new(icon) 
+        @body = 
   end

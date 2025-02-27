@@ -11,9 +11,9 @@ module Sconst
   ZFOOD = ZSPRITE  = ZTEXT = 1
 
   # Image locations + dimensions
-  FOODIMG = "media/star.png"
+  FOODIMG = 'media/star.png'
   FOODX = FOODY = 25 # Tile size
-  BKGIMG = "media/grass_background.png"
+  BKGIMG = 'media/grass_background.png'
 
   # Font sizes for sprites and text
   SPRITESIZE = 12
@@ -24,5 +24,8 @@ module Sconst
 
   # Number of milliseconds before frame refresh
   REFRESH = 100
+
+  #Scorecard dimensions
+  SCORE_SIZE = 50
 
 end

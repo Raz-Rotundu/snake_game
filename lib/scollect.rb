@@ -1,17 +1,19 @@
 # Collections of things for the snake game
 
 require 'gosu'
+require_relative 'sconst.rb'
 module Scollect
   include Sconst
 
   # Collection of animation frames + api
   class Animation
-    def initialize(addr, tile_width. wile_height)
+    def initialize(addr, tile_width, tile_height)
       @frames = Gosu::Image.load_tiles(addr, tile_width, tile_height)
     end
 
     def next()
-      return @frames[(Gosu::Milliseconds / Sconst::REFRESH) % @frames.length()]
+      return @frames[(Gosu.milliseconds / Sconst::REFRESH) % @frames.length()]
+
     end
   end
 
