@@ -6,7 +6,6 @@ require_relative 'better_snake.rb'
 
 module Scollect
   include Sconst
-  include Snake
 
   # Collection of animation frames + api
   class Animation
@@ -24,38 +23,41 @@ module Scollect
   class Snake_Body
     def initialize(head)
       @segments = []
-      @first = @last = nil
-      @head = head
+      @first = head
+      @last = nil
     end
 
-    # Adds a new segment to the body, updating pre and post values
-    def add()
-      s = Snake::Body_segment.new(@head)
+    # Adds a new Body_segment to the body, updating pre and post values
+    def add(body_segment)
+      # Fix later
+      #raise StandardError if body_segment.class != "Snake::Body_segment"
+
       if @segments.length == 0
-        s.x = @head.x - 10
-        s.y = @head.y - 10
-        s.pre = @head
-        @segments.append(s) 
+        body_segment.place((@first.x + 10),(@first.y + 10))
+        body_segment.pre = @first
+        body_segment.direction = @first.direction
+        @segments.append(body_segment)
+        @last = body_segment 
       else
-        @segments[-1] = p
-        s.x = p.x - 10
-        s.y = p.y - 10
-        s.pre = p
-        @segments.append(s)
-        p.post = @segments[-1]
+        body_segment.place((@last.x + 10),(@last.y + 10))
+        body_segment.pre = @last
+        body_segment.direction = @last.direction
+        @segments.append(body_segment)
+        @last = body_segment
       end        
+      #TODO remove this
+      puts(@last)
     end
 
     def clear()
       @segments = []
-      @first = @last = nil
+      @last = nil
     end
 
     #TODO move function alters position of each member
     def move()
       @segments.each do |seg|
-        seg.x = seg.pre.x
-        seg.y = seg.pre.y
+        seg.place((seg.pre.x),(seg.pre.y))
       end
     end
 

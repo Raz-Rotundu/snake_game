@@ -26,6 +26,10 @@ module Snake
     def draw(color = nil)
       color == nil ? @icon.draw_rot(@x, @y, @z, 1, 1) : @icon.draw(@x, @y, @z, 1, 1,color, :additive)
     end
+
+    def to_s()
+      return "X: #{@x}, Y: #{@y}"
+    end
   end
 
 
@@ -51,21 +55,7 @@ module Snake
       end
     end
       
-    #TODO A body segment tracking the position of the segments ahead and behind it
-    class Body_segment < Snake_segment
-      attr_reader :pre, :post
-
-      def initialize(pre)
-        @pre = pre
-        @post = nil
-      end
-
-      def move()
-        @x = @pre.x
-        @y = @pre.y
-      end
-    end
-    # A sprite with position and direction
+        # A sprite with position and direction
     class Snake_head < Snake_segment
       attr_accessor :direction
 
@@ -96,6 +86,32 @@ module Snake
       def is_touching?(obj)
         return Gosu::distance(self.x, self.y, obj.x, obj.y) < 35
       end
+
+      def to_s()
+        s = super()
+        return s + "Direction: #{@direction}"
+      end
+    end
+
+      # A body segment tracking the position of the segments ahead and behind it
+    class Body_segment < Snake_head
+      attr_accessor :pre, :post
+
+      def initialize()
+        @pre = nil
+        @post = nil
+        super()
+      end
+
+      def move()
+        @x = @pre.x
+        @y = @pre.y
+      end
+
+      def to_s()
+        s = super()
+        return s + "Pre: #{@pre}, Post: #{@post}"
+      end
     end
 
     #TODO Class containing head, body and control functions
@@ -103,7 +119,7 @@ module Snake
       attr_reader :direction, :score
 
       def initialize()
-        @head = Snake_head.new() 
+        @head = Snake_head.new()
         @body = Scollect::Snake_Body.new(@head)
         @direction = 'u'
         @score = 0
@@ -131,6 +147,7 @@ module Snake
         collection.reject! do |star|
           if self.is_touching?(star)
             @score += 1
+            @body.add(Body_segment.new())
             true
           else
             false
