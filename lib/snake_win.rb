@@ -12,20 +12,30 @@ module Snake_win
       super(Sconst::WINX, Sconst::WINY)
       self.caption = "Ruby Snake Game"
 
-      @score = 0
       @score_card = Gosu::Font.new(Sconst::SCORE_SIZE)
       
-      @icon = Gosu::Image.from_blob(25,25, "\0\xFF\0\xFF" * (25 * 25))
-
       @anim = Scollect::Animation.new(Sconst::FOODIMG, Sconst::FOODX, Sconst::FOODY)
       @stars = []
 
-      @snake_head = Snake::Snake_head.new(@icon)
-      @snake_head.place((Sconst::WINX / 2), (Sconst::WINY / 2))
+      @snake = Snake::Snake_sprite.new()
+      @snake.place((Sconst::WINX / 2), (Sconst::WINY / 2))
     end
 
     def update()
-      @snake_head.move()
+      if Gosu.button_down?(Gosu::KB_UP)
+        @snake.turn('u')
+      elsif Gosu.button_down?(Gosu::KB_DOWN)
+        @snake.turn('d')
+      elsif Gosu.button_down?(Gosu::KB_LEFT)
+        @snake.turn('l')
+      elsif Gosu.button_down?(Gosu::KB_RIGHT)
+        @snake.turn('r')
+      end
+
+      
+      @snake.eat_star(@stars)
+      @score = @snake.score()
+      @snake.move()
 
       if rand(1..100) < 4 and @stars.length() < 20
         @stars.append(Snake::Star.new(@anim))
@@ -34,13 +44,22 @@ module Snake_win
     end
 
     def draw()
-      @snake_head.draw()
+      @snake.draw()
 
       @stars.each do |s|
         s.draw()
       end
 
-      @score_card.draw_text("Score: #{@score}", 0, 0, 1)
+      @score_card.draw_text("Score: #{@snake.score}", 0, 0, 1)
     end
+
+    def button_down(id)
+      if id == Gosu::KB_Q
+        close()
+      else
+        super(id)
+      end
+    end
+
   end
 end 

@@ -19,6 +19,9 @@ module Sconst
   SPRITESIZE = 12
   FONTSIZE = 24
 
+  # Hex for the green color
+  GREEN_HEX = "\0\xFF\0\xFF"
+
   # Velocity of snake motion
   VEL = 2
 
