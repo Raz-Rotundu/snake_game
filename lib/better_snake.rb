@@ -24,7 +24,7 @@ module Snake
     end
 
     def draw(color = nil)
-      color == nil ? @icon.draw_rot(@x, @y, @z, 1, 1) : @icon.draw(@x, @y, @z, 1, 1,color, :additive)
+      color == nil ? @icon.draw(@x - @icon.width/2, @y - @icon.width/2, @z, 1, 1) : @icon.draw(@x - @icon.width/2, @y - @icon.height/2, @z, 1, 1,color, :additive)
     end
 
     def to_s()
@@ -87,30 +87,44 @@ module Snake
         return Gosu::distance(self.x, self.y, obj.x, obj.y) < 35
       end
 
+      def turn(d)
+        @direction = d
+      end
+
       def to_s()
         s = super()
-        return s + "Direction: #{@direction}"
+        return s + " Direction: #{@direction}"
       end
     end
 
       # A body segment tracking the position of the segments ahead and behind it
     class Body_segment < Snake_head
-      attr_accessor :pre, :post
+      attr_accessor :pre, :post, :pre_x, :pre_y
 
       def initialize()
         @pre = nil
         @post = nil
+        @pre_x = 0
+        @pre_y = 0
         super()
       end
 
+      def update(x,y)
+        @pre_x = x
+        @pre_y = y
+      end
+
       def move()
-        @x = @pre.x
-        @y = @pre.y
+        @x = @pre_x
+        @y = @pre_y
+        
+        @pre_x = @pre.x
+        @pre_y = @pre.y
       end
 
       def to_s()
         s = super()
-        return s + "Pre: #{@pre}, Post: #{@post}"
+        return s + " Pre: #{@pre}, Post: #{@post}"
       end
     end
 
@@ -157,7 +171,21 @@ module Snake
 
       def turn(d)
         @direction = d
-        @head.direction = d
+        @head.turn(d)
+      end
+
+      def self_touch?()
+        @body.each do |s|
+          if self.is_touching?(s)
+            return false
+          end
+        end
+        return false
+      end
+
+      def reset()
+        @body.clear()
+        @head.place(Sconst::WINX/2, Sconst::WINY/2)
       end
     end 
 

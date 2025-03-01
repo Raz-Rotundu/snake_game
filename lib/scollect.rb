@@ -33,20 +33,18 @@ module Scollect
       #raise StandardError if body_segment.class != "Snake::Body_segment"
 
       if @segments.length == 0
-        body_segment.place((@first.x + 10),(@first.y + 10))
+        body_segment.update(@first.x, @first.y)
+        body_segment.place((@first.x + Sconst::SEG_SPACE),(@first.y + Sconst::SEG_SPACE))
         body_segment.pre = @first
-        body_segment.direction = @first.direction
         @segments.append(body_segment)
         @last = body_segment 
       else
-        body_segment.place((@last.x + 10),(@last.y + 10))
+        body_segment.update(@last.x, @last.y)
+        body_segment.place((@last.x + Sconst::SEG_SPACE),(@last.y + Sconst::SEG_SPACE))
         body_segment.pre = @last
-        body_segment.direction = @last.direction
         @segments.append(body_segment)
         @last = body_segment
       end        
-      #TODO remove this
-      puts(@last)
     end
 
     def clear()
@@ -54,16 +52,23 @@ module Scollect
       @last = nil
     end
 
-    #TODO move function alters position of each member
+    # move function alters position of each member
     def move()
       @segments.each do |seg|
-        seg.place((seg.pre.x),(seg.pre.y))
+        seg.move()
       end
     end
 
     def draw()
       @segments.each do |s|
         s.draw()
+      end
+    end
+
+    # Custom enumerable
+    def each
+      for segment in @segments
+        yield(segment)
       end
     end
   end

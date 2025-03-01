@@ -23,12 +23,15 @@ module Sconst
   GREEN_HEX = "\0\xFF\0\xFF"
 
   # Velocity of snake motion
-  VEL = 2
+  VEL = 4
 
   # Number of milliseconds before frame refresh
   REFRESH = 100
 
   #Scorecard dimensions
   SCORE_SIZE = 50
+
+  # Spacing for snake body segments
+  SEG_SPACE = 100
 
 end

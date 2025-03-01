@@ -22,17 +22,22 @@ module Snake_win
     end
 
     def update()
-      if Gosu.button_down?(Gosu::KB_UP)
+      if Gosu.button_down?(Gosu::KB_UP) and not @snake.direction == 'd'
         @snake.turn('u')
-      elsif Gosu.button_down?(Gosu::KB_DOWN)
+      elsif Gosu.button_down?(Gosu::KB_DOWN) and not @snake.direction == 'u'
         @snake.turn('d')
-      elsif Gosu.button_down?(Gosu::KB_LEFT)
+      elsif Gosu.button_down?(Gosu::KB_LEFT) and not @snake.direction == 'r'
         @snake.turn('l')
-      elsif Gosu.button_down?(Gosu::KB_RIGHT)
+      elsif Gosu.button_down?(Gosu::KB_RIGHT) and not @snake.direction == 'l'
         @snake.turn('r')
       end
 
-      
+      # TODO fix this
+      if @snake.self_touch?
+        self.close()
+        @snake.reset()
+      end 
+
       @snake.eat_star(@stars)
       @score = @snake.score()
       @snake.move()
@@ -40,7 +45,8 @@ module Snake_win
       if rand(1..100) < 4 and @stars.length() < 20
         @stars.append(Snake::Star.new(@anim))
       end
-  
+      
+      #TODO remove this
     end
 
     def draw()
