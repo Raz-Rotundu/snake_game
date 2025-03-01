@@ -84,7 +84,7 @@ module Snake
       end
 
       def is_touching?(obj)
-        return Gosu::distance(self.x, self.y, obj.x, obj.y) < 35
+        return Gosu::distance(self.x, self.y, obj.x, obj.y) < Sconst::TOUCH_DIST
       end
 
       def turn(d)
@@ -174,16 +174,20 @@ module Snake
         @head.turn(d)
       end
 
+
+      #TODO function to check if snake is touching itself
       def self_touch?()
         @body.each do |s|
-          if self.is_touching?(s)
-            return false
+          if Gosu::distance(@head.x, @head.y, s.x, s.y) == 0
+            return true
           end
         end
         return false
       end
 
+
       def reset()
+        @score = 0
         @body.clear()
         @head.place(Sconst::WINX/2, Sconst::WINY/2)
       end

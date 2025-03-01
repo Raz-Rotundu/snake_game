@@ -32,21 +32,20 @@ module Snake_win
         @snake.turn('r')
       end
 
-      # TODO fix this
-      if @snake.self_touch?
-        self.close()
-        @snake.reset()
-      end 
-
       @snake.eat_star(@stars)
       @score = @snake.score()
       @snake.move()
+
+      #TODO Check if snake touches itself
+      if @snake.self_touch?
+        @snake.reset()
+      end
+
 
       if rand(1..100) < 4 and @stars.length() < 20
         @stars.append(Snake::Star.new(@anim))
       end
       
-      #TODO remove this
     end
 
     def draw()

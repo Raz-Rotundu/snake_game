@@ -34,4 +34,7 @@ module Sconst
   # Spacing for snake body segments
   SEG_SPACE = 100
 
+  # Number of pixels distance to be considered touching
+  TOUCH_DIST = 35
+
 end
